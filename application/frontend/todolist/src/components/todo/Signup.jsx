@@ -66,6 +66,7 @@ export default class Signup extends Component {
         } else {
             this.setState({successlog: false})
             this.setState({invalidlog: true})
+            return <div>Login Failed</div>
             console.log("Failure");
         }
     }
