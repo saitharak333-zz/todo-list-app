@@ -56,7 +56,7 @@ export default class Login extends Component{
             this.setState({invalidlog: false})
             console.log("Success");
             AuthService.RegisterUser(this.state.username, this.state.password);
-            this.props.history.push(`/welcome/${this.state.username}`);
+            this.props.history.push(`/app/welcome/${this.state.username}`);
         } else {
             this.setState({successlog: false})
             this.setState({invalidlog: true})
@@ -70,19 +70,19 @@ export default class Login extends Component{
     }
 }
 
-function SuccessfulLog(props) {
-    if (props.sucflag === true){
-        return <div>Successfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function SuccessfulLog(props) {
+//     if (props.sucflag === true){
+//         return <div>Successfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 
-function UnsuccessfulLog(props) {
-    if (props.failflag === true){
-        return <div>Unsuccessfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function UnsuccessfulLog(props) {
+//     if (props.failflag === true){
+//         return <div>Unsuccessfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 
