@@ -51,17 +51,32 @@ export default class Login extends Component{
     }
 
     check () {
-        if (this.state.username === "tharak" && this.state.password === "one"){
-            this.setState({successlog: true})
-            this.setState({invalidlog: false})
-            console.log("Success");
-            AuthService.RegisterUser(this.state.username, this.state.password);
-            this.props.history.push(`/welcome/${this.state.username}`);
-        } else {
-            this.setState({successlog: false})
-            this.setState({invalidlog: true})
-            console.log("Failure");
-        }
+            // if (this.state.username === "tharak" && this.state.password === "one"){
+            //     this.setState({successlog: true})
+            //     this.setState({invalidlog: false})
+            //     console.log("Success");
+            //     AuthService.RegisterUser(this.state.username, this.state.password);
+            //     this.props.history.push(`/app/welcome/${this.state.username}`);
+            // } else {
+            //     this.setState({successlog: false})
+            //     this.setState({invalidlog: true})
+            //     console.log("Failure");
+            // }
+
+        AuthService.basicAuthService(this.state.username, this.state.password).then(
+            () => {
+                this.setState({successlog: true})
+                this.setState({invalidlog: false})
+                console.log("Success");
+                AuthService.RegisterUser(this.state.username, this.state.password);
+                this.props.history.push(`/app/welcome/${this.state.username}`);
+            }).catch(
+                () => {
+                    this.setState({successlog: false})
+                    this.setState({invalidlog: true})
+                    console.log("Failure");
+                }
+            )
     }
 
     stateChange (event) {
@@ -70,19 +85,19 @@ export default class Login extends Component{
     }
 }
 
-function SuccessfulLog(props) {
-    if (props.sucflag === true){
-        return <div>Successfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function SuccessfulLog(props) {
+//     if (props.sucflag === true){
+//         return <div>Successfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 
-function UnsuccessfulLog(props) {
-    if (props.failflag === true){
-        return <div>Unsuccessfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function UnsuccessfulLog(props) {
+//     if (props.failflag === true){
+//         return <div>Unsuccessfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 

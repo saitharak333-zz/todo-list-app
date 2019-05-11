@@ -62,11 +62,11 @@ export default class Signup extends Component {
             // this.setState({invalidlog: false})
             console.log("Success");
             AuthService.RegisterUser(this.state.username, this.state.password);
-            this.props.history.push(`/welcome/${this.state.username}`);
+            this.props.history.push(`/app/welcome/${this.state.username}`);
         } else {
             this.setState({successlog: false})
             this.setState({invalidlog: true})
-            console.log("Failure");
+            return <div>Login Failed</div>
         }
     }
 } 
