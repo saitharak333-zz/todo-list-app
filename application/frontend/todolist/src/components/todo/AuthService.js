@@ -20,6 +20,12 @@ class AuthService {
             return true;
         }
     }
+
+    getUsername () {
+        let username = sessionStorage.getItem('authenticatedUser');
+        if (username === null) return ''
+        else return username;
+    }
 }
 
 export default new AuthService()

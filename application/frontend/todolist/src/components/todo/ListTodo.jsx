@@ -3,52 +3,73 @@ import "./Table.css"
 import {Link} from 'react-router-dom'
 import Header from "./Header"
 import AuthService from "./AuthService.js"
+import { Redirect } from 'react-router-dom'
+import TodoService from "../../api/todo/TodoService.js"
 
 export default class ListTodo extends Component {
-    constructor (){
-        super();
+    constructor (props){
+        super(props);
         this.state = {
-            todo: [{id: 1, desc: "Good", tardate: new Date(), comp: false},
-                    {id: 2, desc: "V Good", tardate: new Date(), comp: false},
-                    {id: 3, desc: "better", tardate: new Date(), comp: false},
-                    {id: 4, desc: "best", tardate: new Date(), comp: false}]
+            todos: [],
+            deleted: null,
+            // [{id: 1, desc: "Good", tardate: new Date(), comp: false},
+            //         {id: 2, desc: "V Good", tardate: new Date(), comp: false},
+            //         {id: 3, desc: "better", tardate: new Date(), comp: false},
+            //         {id: 4, desc: "best", tardate: new Date(), comp: false}],
+            todoedit: false
         }
+        this.revertedit = this.revertedit.bind(this);
+        this.deleteTodoElement = this.deleteTodoElement.bind(this);
+        this.editTodoElement = this.editTodoElement.bind(this);
+    }
+
+    componentDidMount() {
+        let username = AuthService.getUsername();
+        TodoService.getallTodos(username).then(
+            response => this.setState({todos: response.data})
+        );
     }
 
     render () {
         const userState = AuthService.isUserLogged();
         console.log(userState);
+        if (this.state.todoedit){
+            return <Redirect to='/todoedit' />
+        } else {
         if (userState){
         return (
-            <div>
+            <>
                 <Header />
                 <h1>Todos List</h1>
+                {this.state.deleted && <div className="alert alert-success">{this.state.deleted}</div>}
                 <div className="container">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>id</th>
-                            <th>description</th>
+                            <th>Description</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Update</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            this.state.todo.map(
-                                todos =>
-                                    <tr>
-                                        <td>{todos.id}</td>
-                                        <td>{todos.desc}</td>
-                                        <td>{todos.tardate.toString()}</td>
-                                        <td>{todos.comp.toString()}</td>
+                            this.state.todos.map(
+                                todo =>
+                                    <tr key={todo.id}>
+                                        <td>{todo.description}</td>
+                                        <td>{todo.deadline.toString()}</td>
+                                        <td>{false}</td>
+                                        <td><button className="btn btn-success" onClick={() => this.editTodoElement(todo.id,todo.username)}>Edit</button></td>
+                                        <td><button className="btn btn-warning" onClick={() => this.deleteTodoElement(todo.id,todo.username)}>Delete</button></td>
                                     </tr> 
                             )
                         }
                     </tbody>
                 </table>
                 </div>
-            </div>
+            </>
         );
         } else {
             return (
@@ -59,5 +80,27 @@ export default class ListTodo extends Component {
             </div>
             );
         }
+    }
+}
+
+    deleteTodoElement(id,username) {
+        TodoService.deleteTodo(username,id).then(
+            response => {
+                TodoService.getallTodos(username).then(
+                    response => {
+                        this.setState({ todos: response.data });
+                    }
+                )
+                this.setState({deleted: `Todo with ${id} got deleted`});
+            }
+        ) 
+    }
+
+    editTodoElement(id, username) {
+        this.props.history.push(`/app/todos/${id}`);
+    }
+
+    revertedit () {
+        this.setState({todoedit: true});
     }
 }

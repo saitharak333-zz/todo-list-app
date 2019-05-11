@@ -6,6 +6,7 @@ import ListTodo from "./ListTodo"
 import Footer from "./Footer"
 import Logout from "./Logout"
 import Signup from "./Signup"
+import EditToDo from "./EditToDo"
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 
 export default class TodoApp extends Component {
@@ -19,10 +20,11 @@ export default class TodoApp extends Component {
                     <>
                         <Switch>
                             <Route path="/" exact component={Signup} />
+                            <Route path="/app/todos/:id" component={EditToDo} />
                             <Route path="/login" component={Login} />
                             <Route path="/signup" component={Signup} />
-                            <Route path="/todo" component={ListTodo} />
-                            <Route path="/welcome/:name" component={WelcomePage} />
+                            <Route path="/app/todos" component={ListTodo} />
+                            <Route path="/app/welcome/:name" component={WelcomePage} />
                             <Route path="/logout" component={Logout} />
                             <Route component={ErrorPage} />
                         </Switch>
