@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import AuthService from "./AuthService.js"
 import Header from "./Header"
 import {Link} from 'react-router-dom'
+import UserService from "../../api/todo/UserService.js"
 
 export default class Signup extends Component {
     
@@ -57,16 +58,26 @@ export default class Signup extends Component {
     }
 
     check() {
-        if (this.state.username === "tharak" && this.state.password === "one" && this.state.repassword === "one"){
-            // this.setState({successlog: true})
-            // this.setState({invalidlog: false})
-            console.log("Success");
-            AuthService.RegisterUser(this.state.username, this.state.password);
-            this.props.history.push(`/welcome/${this.state.username}`);
+        if ((this.state.username !== '') && (this.state.password !== '') && (this.state.password === this.state.repassword)){
+            UserService.signupRequest({
+                username: this.state.username,
+                password: this.state.password
+            }).then(
+                response =>
+                {
+                console.log(response)
+                if (response.data === "Success"){
+                    AuthService.RegisterUser(this.state.username, this.state.password)
+                    this.props.history.push(`/app/welcome/${this.state.username}`)
+                } else {
+                    console.log("Username exists, create account with a different username")
+                    return <div>Username exists, create account with a different username</div>
+                }
+            }).catch(error => console.log(error))               
         } else {
             this.setState({successlog: false})
             this.setState({invalidlog: true})
-            console.log("Failure");
+            return <div>Login Failed</div>
         }
     }
 } 

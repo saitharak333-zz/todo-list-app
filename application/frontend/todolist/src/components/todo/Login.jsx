@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import AuthService from "./AuthService.js"
 import Header from "./Header"
 import {Link} from 'react-router-dom'
+import UserService from "../../api/todo/UserService.js"
 
 export default class Login extends Component{
     
@@ -51,17 +52,56 @@ export default class Login extends Component{
     }
 
     check () {
-        if (this.state.username === "tharak" && this.state.password === "one"){
-            this.setState({successlog: true})
-            this.setState({invalidlog: false})
-            console.log("Success");
-            AuthService.RegisterUser(this.state.username, this.state.password);
-            this.props.history.push(`/welcome/${this.state.username}`);
-        } else {
-            this.setState({successlog: false})
-            this.setState({invalidlog: true})
-            console.log("Failure");
-        }
+            if ((this.state.username === "")){
+                console.log("Please Enter your Valid Credentials - Username Emepty")
+            } else if ((this.state.password === "")) {
+                console.log("Please Enter your Valid Credentials - Username Emepty")
+            } else {
+                UserService.loginRequest({
+                    username: this.state.username,
+                    password: this.state.password
+                }).then(
+                    response => {
+                        if (response.data === "Success"){
+                            this.setState({successlog: true})
+                            this.setState({invalidlog: false})
+                            console.log("Success");
+                            AuthService.RegisterUser(this.state.username, this.state.password);
+                            this.props.history.push(`/app/welcome/${this.state.username}`);
+                        } else if (response.data === "Failure"){
+                            console.log("Invalid credentials")
+                        } else {
+                            console.log ("User with " + this.state.username + " not present")
+                        }
+                    }
+                ) 
+            }
+            // if (this.state.username === "tharak" && this.state.password === "one"){
+            //     this.setState({successlog: true})
+            //     this.setState({invalidlog: false})
+            //     console.log("Success");
+            //     AuthService.RegisterUser(this.state.username, this.state.password);
+            //     this.props.history.push(`/app/welcome/${this.state.username}`);
+            // } else {
+            //     this.setState({successlog: false})
+            //     this.setState({invalidlog: true})
+            //     console.log("Failure");
+            // }
+
+        // AuthService.basicAuthService(this.state.username, this.state.password).then(
+        //     () => {
+        //         this.setState({successlog: true})
+        //         this.setState({invalidlog: false})
+        //         console.log("Success");
+        //         AuthService.RegisterUser(this.state.username, this.state.password);
+        //         this.props.history.push(`/app/welcome/${this.state.username}`);
+        //     }).catch(
+        //         () => {
+        //             this.setState({successlog: false})
+        //             this.setState({invalidlog: true})
+        //             console.log("Failure");
+        //         }
+        //     )
     }
 
     stateChange (event) {
@@ -70,19 +110,19 @@ export default class Login extends Component{
     }
 }
 
-function SuccessfulLog(props) {
-    if (props.sucflag === true){
-        return <div>Successfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function SuccessfulLog(props) {
+//     if (props.sucflag === true){
+//         return <div>Successfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 
-function UnsuccessfulLog(props) {
-    if (props.failflag === true){
-        return <div>Unsuccessfull Login</div>;
-    } else {
-        return null;
-    }
-}
+// function UnsuccessfulLog(props) {
+//     if (props.failflag === true){
+//         return <div>Unsuccessfull Login</div>;
+//     } else {
+//         return null;
+//     }
+// }
 
